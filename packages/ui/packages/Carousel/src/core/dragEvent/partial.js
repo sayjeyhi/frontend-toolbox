@@ -13,21 +13,49 @@ import {
   nextNone,
 } from '../utils';
 
+/**
+ * @name directionClientX
+ * @description returns the position of the slider trailer based on the direction of the slider for drag
+ * @param params
+ * @returns {number|null}
+ */
 export const directionClientX = (params) => {
   const { rtl, e, sliderMainWidth } = params;
-  if (rtl) return sliderMainWidth - e.clientX;
+  if (rtl) {
+    return sliderMainWidth - e.clientX;
+  }
   return e.clientX;
 };
 
+/**
+ * @name directionTouchClientX
+ * @description returns the pisition of the slider trailer based on the direction of the slider for toch
+ * @param params
+ * @returns {number|null}
+ */
 export const directionTouchClientX = (params) => {
   const { rtl, e, sliderMainWidth } = params;
-  if (rtl) return sliderMainWidth - e.touches[0].clientX;
+  if (rtl) {
+    return sliderMainWidth - e.touches[0].clientX;
+  }
   return e.touches[0].clientX;
 };
 
-export const caroueslTouchStart = (params) => directionTouchClientX(params);
+/**
+ * @name carouselTouchStart
+ * @description a wrapper for the directionTouchClientX method to handle the touch start event
+ * @param params
+ * @returns {number}
+ */
+export const carouselTouchStart = (params) => directionTouchClientX(params);
 
-export const caroueslDragAction = (params) => {
+/**
+ * @name carouselDragAction
+ * @description a wrapper for the directionClientX method which attaches the mouse position for start to end point of the dragging to it
+ * @param params
+ * @returns {number}
+ */
+export const carouselDragAction = (params) => {
   const {
     e, dragEndCall, dragActionCall, sliderMainWidth, rtl,
   } = params;
@@ -35,6 +63,13 @@ export const caroueslDragAction = (params) => {
   document.onmousemove = dragActionCall;
   return directionClientX({ rtl, e, sliderMainWidth });
 };
+
+/**
+ * @name dragActionTouchmovePosX2
+ * @description returns the end position of the touch to make the trailer, translate to that point
+ * @param params
+ * @returns {number}
+ */
 export const dragActionTouchmovePosX2 = (params) => {
   const {
     e, posX1, rtl, sliderMainWidth,
@@ -42,16 +77,41 @@ export const dragActionTouchmovePosX2 = (params) => {
   return posX1 - directionTouchClientX({ rtl, e, sliderMainWidth });
 };
 
+/**
+ * @name dragActionTouchmovePosX1
+ * @description returns the start position of the touch to calculate later for translating the trailer to the end point
+ * @param params
+ * @returns {number}
+ */
 export const dragActionTouchmovePosX1 = (params) => directionTouchClientX(params);
 
+/**
+ * @name dragActionMousemove
+ * @description returns the end position of the drag to make the trailer, translate to that point
+ * @param params
+ * @returns {number}
+ */
 export const dragActionMousemove = (params) => {
   const {
     posX1, e, rtl, sliderMainWidth,
   } = params;
   return posX1 - directionClientX({ rtl, e, sliderMainWidth });
 };
+
+/**
+ * @name dragActionMousemovePosX1
+ * @description returns the start position of the drag to calculate later for translating the trailer to the end point
+ * @param params
+ * @returns {number}
+ */
 export const dragActionMousemovePosX1 = ({ rtl, e, sliderMainWidth }) => directionClientX({ rtl, e, sliderMainWidth });
 
+/**
+ * @name dragActionCalcPosition
+ * @description calculates the positions to translate the trailer to
+ * @param params
+ * @returns {boolean}
+ */
 export const dragActionCalcPosition = (params) => {
   const {
     sliderItems,
@@ -66,18 +126,51 @@ export const dragActionCalcPosition = (params) => {
     threshold,
   } = params;
 
+  // @todo: bellow methods need some cleanp, for example you can use bellow method to handle all of them
+  /*
+  // method
+  const translateValue(value){
+    return rtl ? -value : value;
+  }
+  //usage
+  const posX2New = translateValue(posX2);
+   */
+
+  /**
+   * @name posX2New
+   * @description returns position of the dragged or touched point, to translate the trailer based on the direction
+   * @returns {number|*}
+   */
   const posX2New = () => {
-    if (rtl) return -posX2;
+    if (rtl) {
+      return -posX2;
+    }
     return posX2;
   };
+  /**
+   * @name thresholdNew
+   * @description returns the permitted threshold, to stop the trailer after going to the void based on the direction
+   * @returns {number|*}
+   */
   const thresholdNew = () => {
-    if (rtl) return -threshold;
+    if (rtl) {
+      return -threshold;
+    }
     return threshold;
   };
+
+  /**
+   * @name sliderItemWidthNew
+   * @description returns the width of slider items based on the direction
+   * @returns {number|*}
+   */
   const sliderItemWidthNew = () => {
-    if (rtl) return sliderItemWidth;
+    if (rtl) {
+      return sliderItemWidth;
+    }
     return -sliderItemWidth;
   };
+
   const calcFinalItemPositionNew = directionSetter({
     rtl,
     input: calcFinalItemPosition({
@@ -89,6 +182,44 @@ export const dragActionCalcPosition = (params) => {
     }),
   });
 
+  // @todo: bellow calculation could be handled way better and cleaner using an object to point to a method which does the calculation for exact condition
+  /*
+   //here is an example
+   const limitedLtr = () => {
+    // stop drag when firstItem go to lastItem on drag
+    const firstTolastDrag = getTranslate3d(sliderItems) - posX2New()
+      > sliderItemWidthNew() * perSlide + thresholdNew();
+    // stop drag when lastItem go to fistItem on drag
+    const lastToFirstDrag = getTranslate3d(sliderItems) - posX2New()
+      <= calcFinalItemPositionNew - thresholdNew();
+
+    if (firstTolastDrag || lastToFirstDrag) {
+      return false;
+    }
+    return true
+   }
+   // map to methods
+   const calculationMapper = {
+    infinite: {
+      rtl: infiniteRtl,
+      ltr: infiniteLtr,
+    },
+    limited: {
+      rtl: limitedRtl,
+      ltr: limitedLtr,
+    },
+   }
+   // usage
+   const allowedToContinue = calculationMapper[infinite ? 'infinite' : 'limited][rtl ? 'rtl' : 'ltr']();
+   if(allowedToContinue){
+    // do whatever you want
+   }
+   */
+  /**
+   * for sliders which are infinite and LTR
+   * makes the trailer only translate between permitted points,
+   * by passing the points it will stop the transitioning using threshold
+   */
   if (!infinite && !rtl) {
     // stop drag when firstItem go to lastItem on drag
     const firstTolastDrag = getTranslate3d(sliderItems) - posX2New()
@@ -102,6 +233,11 @@ export const dragActionCalcPosition = (params) => {
     }
   }
 
+  /**
+   * for sliders which are infinite and LTR
+   * makes the trailer only translate between permitted points,
+   * by passing the points it will stop the transitioning using trailer position
+   */
   if (infinite && !rtl) {
     // stop drag when firstItem go to lastItem on drag
     const firstTolastDrag = getTranslate3d(sliderItems) - posX2New() > 0;
@@ -114,6 +250,11 @@ export const dragActionCalcPosition = (params) => {
     }
   }
 
+  /**
+   * for sliders which are not infinite and RTL
+   * makes the trailer only translate between permitted points,
+   * by passing the points it will stop the transitioning using threshold
+   */
   if (!infinite && rtl) {
     // stop drag when firstItem go to lastItem on drag
     const firstTolastDrag = getTranslate3d(sliderItems) - posX2New()
@@ -126,6 +267,12 @@ export const dragActionCalcPosition = (params) => {
       return false;
     }
   }
+
+  /**
+   * for sliders which are infinite and RTL
+   * makes the trailer only translate between permitted points,
+   * by passing the points it will stop the transitioning using trailer position
+   */
   if (infinite && rtl) {
     // stop drag when firstItem go to lastItem on drag
     const firstTolastDrag = getTranslate3d(sliderItems) - posX2New() < 0;
@@ -137,18 +284,40 @@ export const dragActionCalcPosition = (params) => {
     }
   }
 
+  /**
+   * @name = result;
+   * @description wrapper for getTranslate3d to get the css translate to set on the slider trailer
+   * @returns {number}
+   */
+  // @todo: no need to make a function, you can simply use a variable
+  /*
+    //e.g.
+    const result = getTranslate3d(sliderItems) - posX2New();
+    //usage
+    sliderItems.style.transform = setTranslate3d(result);
+   */
   const result = () => getTranslate3d(sliderItems) - posX2New();
   sliderItems.style.transform = setTranslate3d(result());
+  // @todo: because this function is not a void function and returns false based on going over the void, should return something at the end, but by implementing the mapper that i mentioned earlier there's no need to do this
+  return true;
 };
 
+/**
+ * @name mouseEventNull
+ * @description detaches the mouse events
+ */
 export const mouseEventNull = () => {
   document.onmouseup = null;
   document.onmousemove = null;
 };
 
+/**
+ * @name dragStart
+ * @description starts the touching or the dragging of the slider and sets the initial position to use it later to finish the transition of the slider
+ * @param params
+ */
 export const dragStart = (params) => {
-  let {
-    e,
+  const {
     sliderItems,
     dragEndCall,
     dragActionCall,
@@ -158,13 +327,24 @@ export const dragStart = (params) => {
     rtl,
   } = params;
 
-  e = e || window.event;
+  // @todo: instead of overwriting the destructured variable, make a new one
+  /*
+  //e.g.
+  const {e} = params;
+  // usage
+  const event = e || window.event;
+  event.preventDefault();
+   */
+  let {
+    e,
+  } = params;
+  e = e || window.event; // @todo: deprecated symbol, use better alternatives
   e.preventDefault();
   const posInitial = getTranslate3d(sliderItems);
-  if (e.type == 'touchstart') {
+  if (e.type === 'touchstart') {
     setPosInitial(posInitial);
     setPosX1(
-      caroueslTouchStart({
+      carouselTouchStart({
         e,
         rtl,
         sliderMainWidth,
@@ -179,13 +359,17 @@ export const dragStart = (params) => {
       sliderMainWidth,
     };
     setPosInitial(posInitial);
-    setPosX1(caroueslDragAction(dragActionParams));
+    setPosX1(carouselDragAction(dragActionParams));
   }
 };
 
+/**
+ * @name dragAction
+ * @description handles the drag or touch of the slider trailer to translate to the current drag or touch point
+ * @param params
+ */
 export const dragAction = (params) => {
-  let {
-    e,
+  const {
     getPosX1,
     setPosX1,
     setPosX2,
@@ -201,10 +385,22 @@ export const dragAction = (params) => {
     getSlideSize,
     getSliderMainWidth,
   } = params;
+
+  // @todo: instead of overwriting the destructured variable, make a new one
+  /*
+  //e.g.
+  const {e} = params;
+  // usage
+  const event = e || window.event;
+  //whatever you want
+   */
+  let {
+    e,
+  } = params;
   const sliderMainWidth = getSliderMainWidth();
-  e = e || window.event;
+  e = e || window.event; // @todo: deprecated symbol, use better alternatives
   const clientXParams = { e, rtl, sliderMainWidth };
-  if (e.type == 'touchmove') {
+  if (e.type === 'touchmove') {
     const dragActionTouchmovePosX2Params = {
       posX1: getPosX1(),
       ...clientXParams,
@@ -238,6 +434,11 @@ export const dragAction = (params) => {
   dragActionCalcPosition(dragActionCalcPositionParams);
 };
 
+/**
+ * @name dragEnd
+ * @description handles the drag end to make slider trailer translate to the given point, also checks to avoid the trailer pass the permitted points
+ * @param params
+ */
 export const dragEnd = (params) => {
   const {
     sliderItems,
@@ -257,8 +458,15 @@ export const dragEnd = (params) => {
 
   const perSlide = truncResponsiveItemCount(responsive);
 
-  const thresholdNew = () => {
-    if (rtl) return -threshold;
+  /**
+   * @name thresholdNew
+   * @description returns the threshold based on the direction
+   * @return {number|*}
+   */
+  const thresholdNew = () => { // @todo: you can use the approach to translate the value that were mentioned before
+    if (rtl) {
+      return -threshold;
+    }
     return threshold;
   };
 
@@ -283,6 +491,9 @@ export const dragEnd = (params) => {
   });
   setIndex(calcIndex);
 
+  /**
+   * transforms to the final point, if infinite or limited sliders have valid active slider index
+   */
   if (
     (!infinite
       && calcIndex > slidesLength
@@ -297,12 +508,20 @@ export const dragEnd = (params) => {
     nextBlock(slider);
   }
 
+  // @todo: you can use the mapping approach that mentioned earlier, to make bellow code cleaner
+
+  /**
+   * transforms to the void of slider point, if  limited sliders passed the permitted range
+   */
   if (!infinite && calcIndex === slidesLength + perSlide) {
     sliderItems.style.transform = setTranslate3d(
       getPosFinal() - sliderItems.children[0].clientWidth,
     );
   }
 
+  /**
+   * for limited or RTL sliders, makes the trailer stick to the start void, if drag end event happened out of permitted range
+   */
   if (
     (!infinite
       && getTranslate3d(sliderItems) <= thresholdNew()
@@ -314,6 +533,9 @@ export const dragEnd = (params) => {
     nextBlock(slider);
   }
 
+  /**
+   * for limited and LTR sliders, makes the trailer stick to the end void, if drag end event happened out of the permitted range
+   */
   if (
     !infinite
     && !rtl
@@ -324,6 +546,9 @@ export const dragEnd = (params) => {
     prevBlock(slider);
   }
 
+  /**
+   * for limited and RTL sliders, makes the trailer stick to the end void, if drag end event happened out of the permitted range
+   */
   if (
     !infinite
     && rtl
