@@ -1,20 +1,37 @@
 import { dragAction, dragEnd, dragStart } from './partial';
 
 export default class DragEvent {
+  /**
+   * @name constructor
+   * @description sets the core to access to the core instance methods without inheritance, initializes the drag events handlers
+   * @param params
+   */
   constructor(params) {
     const { core } = params;
     this.setCore(core);
     this.initialize();
   }
 
+  /**
+   * @name setCore
+   * @param core
+   */
   setCore(core) {
     this.core = core;
   }
 
+  /**
+   * @name getCore
+   * @return {object}
+   */
   getCore() {
     return this.core;
   }
 
+  /**
+   * @name initialize
+   * @description gets the config from core, initializes the drag action events, and attaches to the slider
+   */
   initialize() {
     const {
       config: {
@@ -39,6 +56,10 @@ export default class DragEvent {
       transitionendWatcherCall,
     } = this.core;
 
+    /**
+     * @name dragEndCall
+     * @description handles the drag end event by passing the config and end point of the dragging to the dragEnd method
+     */
     const dragEndCall = () => {
       const dragStartParams = {
         sliderItems: getSliderItems(),
@@ -63,6 +84,11 @@ export default class DragEvent {
       dragEnd(dragStartParams);
     };
 
+    /**
+     * @name dragActionCall
+     * @description handles the dragging event by passing the config and current drag point to the dragAction method
+     * @param e
+     */
     const dragActionCall = (e) => {
       const dragActionParams = {
         e,
@@ -85,6 +111,11 @@ export default class DragEvent {
       dragAction(dragActionParams);
     };
 
+    /**
+     * @name dragStartCall
+     * @description handles the drag start event by passing config and start point of drag event to the dragStart method
+     * @param e
+     */
     const dragStartCall = (e) => {
       const dragStartParams = {
         e,
@@ -92,7 +123,7 @@ export default class DragEvent {
         setPosInitial,
         setPosX1,
         dragEndCall,
-        dragActionCall: (e) => dragActionCall(e),
+        dragActionCall: (event) => dragActionCall(event), // there was a conflict for naming parameters, changed it to event.
         sliderMainWidth: getSliderMainWidth(),
         rtl,
       };
