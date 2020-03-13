@@ -9,20 +9,38 @@ import {
 
 import { shiftSlideIsDir, shiftSlideNonDir } from './partial';
 export default class SliderArrows {
+  /**
+   * @name constructor
+   * @description sets the core to access to the core instance methods without inheritance, initializes the arrow handler and events
+   * @param params
+   */
   constructor(params) {
     const { core } = params;
     this.setCore(core);
     this.initialize();
   }
 
+
+  /**
+   * @name setCore
+   * @param core
+   */
   setCore(core) {
     this.core = core;
   }
 
+  /**
+   * @name getCore
+   * @return {object}
+   */
   getCore() {
     return this.core;
   }
 
+  /**
+   * @name initialize
+   * @description gets the config from core, initializes the arrow events handlers
+   */
   initialize() {
     const {
       config: { slider },
@@ -51,6 +69,12 @@ export default class SliderArrows {
     setAllowShift(true);
   }
 
+  /**
+   * @name shiftSlide
+   * @description sifts to the next or previous sliders page, based on given direction to go to
+   * @param dir
+   * @param action
+   */
   shiftSlide(dir, action) {
     const {
       config: { infinite, responsive, rtl },
@@ -84,9 +108,9 @@ export default class SliderArrows {
         infinite,
         rtl,
       };
-      if (dir == 1) {
+      if (dir === 1) {
         setIndex(shiftSlideIsDir(shiftSlideParams));
-      } else if (dir == -1) {
+      } else if (dir === -1) {
         setIndex(shiftSlideNonDir(shiftSlideParams));
       }
     }

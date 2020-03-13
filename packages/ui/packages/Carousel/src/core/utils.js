@@ -174,20 +174,25 @@ export const responsiveItemCount = (getConfig) => {
 
 export const switchInfiniteResponsiveCount = (itemCont, infinite) => infinite ? itemCont : 0;
 
+//@todo: function name is not clear, better name: hidePrevArrow
 export const prevNone = (slider) => (childFider({
   wrapper: slider,
   className: '.prev',
 }).style.display = 'none');
 
+//@todo: function name is not clear, better name: showPrevArrow
 export const prevBlock = (slider) => (childFider({
   wrapper: slider,
   className: '.prev',
 }).style.display = 'block');
 
+//@todo: function name is not clear, better name: hideNextArrow
 export const nextNone = (slider) => (childFider({
   wrapper: slider,
   className: '.next',
 }).style.display = 'none');
+
+//@todo: function name is not clear, better name: showNextArrow
 export const nextBlock = (slider) => (childFider({
   wrapper: slider,
   className: '.next',
