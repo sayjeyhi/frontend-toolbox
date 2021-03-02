@@ -1,8 +1,5 @@
-import {
-  dragAction,
-  dragEnd,
-  dragStart,
-} from './partial';
+import { dragAction, dragEnd, dragStart } from './partial';
+import { getTranslate3d } from '../utils';
 
 export default class DragEvent {
   constructor(params) {
@@ -21,12 +18,7 @@ export default class DragEvent {
 
   initialize() {
     const {
-      config: {
-        responsive,
-        threshold,
-        rtl,
-        nav,
-      },
+      config: { responsive, threshold, rtl, nav, autoWidth, freeScroll },
       getDrag,
       getInfinite,
       getSliderItems,
@@ -41,6 +33,7 @@ export default class DragEvent {
       getIndex,
       getSlideSize,
       getSliderMainWidth,
+      getSliderItemWidth,
       setIndex,
       setPosFinal,
       getPosFinal,
@@ -51,6 +44,7 @@ export default class DragEvent {
     const infinite = getInfinite();
     const sliderItems = getSliderItems();
     const drag = getDrag();
+    let startTrans = null;
 
     const dragEndCall = () => {
       const dragStartParams = {
@@ -65,6 +59,7 @@ export default class DragEvent {
         infinite,
         rtl,
         nav,
+        autoWidth,
         setIndex,
         setPosFinal,
         transitionendWatcherCall,
@@ -74,11 +69,14 @@ export default class DragEvent {
         setPosX1,
         setAllowShift,
         index: getIndex(),
+        sliderItemWidth: getSliderItemWidth(),
+        freeScroll,
+        startTrans,
       };
       dragEnd(dragStartParams);
     };
 
-    const dragActionCall = (e) => {
+    const dragActionCall = e => {
       const dragActionParams = {
         e,
         getPosX1,
@@ -88,6 +86,7 @@ export default class DragEvent {
         getSliderItems,
         threshold,
         rtl,
+        autoWidth,
         getPosX2,
         getSlidesLength,
         getPerSlide,
@@ -100,24 +99,40 @@ export default class DragEvent {
       dragAction(dragActionParams);
     };
 
-    const dragStartCall = (e) => {
+    const dragStartCall = e => {
       const dragStartParams = {
         e,
         sliderItems,
         setPosInitial,
         setPosX1,
         dragEndCall,
-        dragActionCall: () => dragActionCall(e),
+        dragActionCall,
         sliderMainWidth: getSliderMainWidth(),
         rtl,
+        autoWidth,
       };
+      startTrans = getTranslate3d(sliderItems);
       dragStart(dragStartParams);
     };
 
     // Mouse events
     sliderItems.addEventListener('mousedown', dragStartCall);
+
     // Touch events
-    sliderItems.addEventListener('touchstart', dragStartCall);
+    let supportsPassive = false;
+    try {
+      const opts = Object.defineProperty({}, 'passive', {
+        // eslint-disable-next-line getter-return
+        get() {
+          supportsPassive = true;
+        },
+      });
+      window.addEventListener("testPassive", null, opts);
+      window.removeEventListener("testPassive", null, opts);
+      // eslint-disable-next-line no-empty
+    } catch (e) {}
+
+    sliderItems.addEventListener('touchstart', dragStartCall, supportsPassive ? { passive: true } : false);
     sliderItems.addEventListener('touchend', dragEndCall);
     sliderItems.addEventListener('touchmove', dragActionCall);
   }

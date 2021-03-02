@@ -4,10 +4,7 @@ import {
   vdomArrayConvertor,
 } from '../utils';
 
-import {
-  dotsItemsGenerator,
-  dotsItemsClick,
-} from './partial';
+import { dotsItemsGenerator, dotsItemsClick } from './partial';
 
 export default class SliderDots {
   constructor(params) {
@@ -24,18 +21,17 @@ export default class SliderDots {
     return this.core;
   }
 
-  setDotsSelector(dotsSelector) { this.dotsSelector = dotsSelector; }
+  setDotsSelector(dotsSelector) {
+    this.dotsSelector = dotsSelector;
+  }
 
-  getDotsSelector() { return this.dotsSelector; }
+  getDotsSelector() {
+    return this.dotsSelector;
+  }
 
   initialize() {
     const {
-      config: {
-        slider,
-        responsive,
-        nav,
-        rtl,
-      },
+      config: { slider, responsive, nav, rtl, autoWidth, paginationWrapper },
       getInfinite,
       getSlidesLength,
       getSliderItemWidth,
@@ -49,23 +45,30 @@ export default class SliderDots {
     } = this.core;
 
     const sliderItems = getSliderItems();
-    const dotsSelector = childFider({
-      wrapper: slider,
-      className: '.dots',
-    });
-    // generate dots items
-    const dotsItemsParams = {
-      slidesLength: getSlidesLength(),
-      responsive,
-      dotsSelector,
-      sliderItems,
-    };
+
+    const dotsSelector = paginationWrapper
+      ? paginationWrapper.current.querySelector('.slides')
+      : childFider({
+          wrapper: slider,
+          className: '.dots',
+        });
+    if (!paginationWrapper) {
+      // generate dots items
+      const dotsItemsParams = {
+        slidesLength: getSlidesLength(),
+        responsive,
+        dotsSelector,
+        sliderItems,
+        autoWidth,
+        sliderMainWidth: getSliderMainWidth(),
+      };
+      dotsItemsGenerator(dotsItemsParams);
+    }
 
     // generate dots group per show slides
-    dotsItemsGenerator(dotsItemsParams);
 
     // dots item click for transition on active index
-    vdomArrayConvertor(dotsSelector.children).forEach((item) => {
+    vdomArrayConvertor(dotsSelector.children).forEach(item => {
       item.addEventListener('click', () => {
         const dotIndex = parseInt(item.getAttribute('data-dot-index'), 10);
         const indexItem = truncResponsiveItemCount(responsive) * (dotIndex - 1);
@@ -85,12 +88,11 @@ export default class SliderDots {
           nav,
           rtl,
           item,
+          autoWidth,
         };
-        const {
-          index,
-          allowShift,
-          posInitial,
-        } = dotsItemsClick(dotsItemsClickParams);
+        const { index, allowShift, posInitial } = dotsItemsClick(
+          dotsItemsClickParams,
+        );
         setIndex(index);
         setAllowShift(allowShift);
         setPosInitial(posInitial);

@@ -10,45 +10,43 @@ import {
 } from './styles';
 
 const Textarea = React.forwardRef((props, ref) => {
-  const {
-    status, message, label, required, id, ...rest
-  } = props;
+  const { className, status, message, label, required, onChange, ...rest } = props;
   return (
-    <StyledTextareaWrapper>
-      {label && id && (
-        <StyledLabel htmlFor={id}>
-          {label}
-          {' '}
-          {required && <StyledStar>*</StyledStar>}
+    <StyledTextareaWrapper className={className} data-testid="textareaWrapper">
+      {label && (
+        <StyledLabel data-testid="textareaLabel" htmlFor={rest.id || ''}>
+          {label} {required && <StyledStar data-testid="textareaLabelRequired">*</StyledStar>}
         </StyledLabel>
       )}
-      <StyledTextarea status={status} ref={ref} id={id} {...rest} />
+      <StyledTextarea data-testid="textarea" status={status} ref={ref} onChange={onChange} {...rest} />
       {Object.keys(message).length > 0 && (
-        <StyledMessage type={message.type}>{message.content}</StyledMessage>
+        <StyledMessage data-testid="textareaMessage" type={message.type}>{message.content}</StyledMessage>
       )}
     </StyledTextareaWrapper>
   );
 });
 
 Textarea.propTypes = {
-  id: PropTypes.string,
   label: PropTypes.string,
   status: PropTypes.oneOf(['gray', 'red', 'blue', 'orange', 'green', 'yellow']),
   value: PropTypes.any,
   placeholder: PropTypes.any,
   className: PropTypes.string,
-  message: PropTypes.object,
+  message: PropTypes.shape({
+    type: PropTypes.oneOf(['success', 'danger']),
+    content: PropTypes.string,
+  }),
   onChange: PropTypes.func,
-  Children: PropTypes.string,
+  children: PropTypes.string,
   required: PropTypes.bool,
 };
 
 Textarea.defaultProps = {
   status: 'gray',
-  id: '',
   label: '',
   message: {},
   required: false,
+  onChange: f => f,
 };
 
 export default Textarea;

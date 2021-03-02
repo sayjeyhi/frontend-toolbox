@@ -1,65 +1,74 @@
-const DEFAULT_REM = '1rem';
-
 /**
- * Convert hex to rgba
+ * @function
+ * @name hexToRgb
+ * @description Convert hex color to rgb color
  * @param hex
  * @returns {{red: number, green: number, blue: number}}
- * @constructor
  */
-export const HexToRgb = (hex) => {
+export const hexToRgb = hex => {
   if (!hex) {
     return { red: 0, green: 0, blue: 0 };
   }
+
   const hexColor = hex.replace('#', '');
-
-  const rgb = {};
-  rgb.red = parseInt(hexColor.substr(0, 2), 16);
-  rgb.green = parseInt(hexColor.substr(2, 2), 16);
-  rgb.blue = parseInt(hexColor.substr(4, 2), 16);
-
-  return rgb;
+  return {
+    red: parseInt(hexColor.substr(0, 2), 16),
+    green: parseInt(hexColor.substr(2, 2), 16),
+    blue: parseInt(hexColor.substr(4, 2), 16),
+  };
 };
 
 /**
- * Decide between darkness and lightness
- * @param color
+ * @function
+ * @name defineForegroundColor
+ * @description Decide between dark or light color based on background color brightness
+ * @param backgroundColor   {string}    background color in hex
  * @returns {string}
  */
-export const defineForegroundColor = (color) => {
-  const rgb = HexToRgb(color);
+export const defineForegroundColor = backgroundColor => {
+  const rgb = hexToRgb(backgroundColor);
   const average = (rgb.red * 299 + rgb.green * 587 + rgb.blue * 114) / 1000;
   return average > 128 ? 'taupe' : 'white';
 };
 
 /**
- * Make an rgba color from a hex
+ * @function
+ * @name makeRgba
+ * @description Make an rgba color suitable for CSS from a hex color
  * @param opacity
  * @param color
  * @returns {string}
  */
 export const makeRgba = (opacity, color) => {
-  const rgb = HexToRgb(color);
-  return `rgba(${rgb.red},${rgb.green},${rgb.blue}, ${opacity})`;
+  const rgb = hexToRgb(color);
+  return `rgba(${rgb.red}, ${rgb.green}, ${rgb.blue}, ${opacity})`;
 };
 
 /**
- * Decide between rem and percent values
- * @param measurement
+ * @function
+ * @name decideMeasurement
+ * @description Decide
+ * @param measurement what measurement to use, given measurement or multiplying it in rem unit
  * @returns {string}
  */
-export const decideMeasurement = (measurement) => typeof measurement === 'string'
-  ? measurement
-  : `calc(${DEFAULT_REM} * ${measurement})`;
+export const decideMeasurement = measurement => {
+  const defaultRem = '1rem'; // @todo: gonna remove it in next release
+  return typeof measurement === 'string'
+    ? measurement
+    : `calc(${defaultRem} * ${measurement})`;
+};
 
 /**
- * Will create shadow in easy way
- * @param hOffset
- * @param vOffset
- * @param blur
- * @param spread
- * @param color
- * @param inset
- * @returns {function(*): string}
+ * @function
+ * @name makeShadow
+ * @description returns a shadow suitable for css
+ * @param   hOffset   {number|string}    horizontal offset of shadow, wil be multiplied in rem
+ * @param   vOffset   {number|string}    vertical offset of shadow, wil be multiplied in rem
+ * @param   blur      {number|string}    blur of the shadow, wil be multiplied in rem
+ * @param   spread    {number|string}    spread of the shadow, wil be multiplied in rem
+ * @param   color     {string}    color of the shadow
+ * @param   inset     {boolean}    blur of the shadow, wil be multiplied in rem
+ * @returns {string}
  */
 export const makeShadow = (
   hOffset,
@@ -68,10 +77,66 @@ export const makeShadow = (
   spread,
   color,
   inset = false,
-) => () => `calc(${DEFAULT_REM} * ${hOffset})
-  calc(${DEFAULT_REM} * ${vOffset}) 
-  calc(${DEFAULT_REM} * ${blur}) 
-  calc(${DEFAULT_REM} * ${spread}) 
-  ${color} 
-  ${inset || ''}
-`;
+) =>
+  `${decideMeasurement(hOffset)} ${decideMeasurement(
+    vOffset,
+  )} ${decideMeasurement(blur)} ${decideMeasurement(spread)} ${color}${
+    inset ? ' inset' : ''
+  }`;
+
+/**
+ * @function
+ * @name makeRgbaColor
+ * @description Make rgba from a passed color
+ * @param opacity
+ * @param name
+ * @param shade
+ * @returns {function(*=): string}
+ */
+export const makeRgbaColor = (opacity, name, shade = false) => props => {
+  const rgb = hexToRgb(color(name, shade)(props));
+  return `rgba(${rgb.red}, ${rgb.green}, ${rgb.blue}, ${opacity})`;
+};
+
+/**
+ * @function
+ * @name rem
+ * @description Will handle every thing about rem, just supply the value
+ * @returns {function(*): string}
+ */
+export const rem = function remSizes() {
+  return props =>
+    // eslint-disable-next-line prefer-rest-params
+    [...arguments]
+      .map(size =>
+        // eslint-disable-next-line no-nested-ternary
+        size
+          ? typeof size !== 'number'
+            ? size
+            : props.theme.defaultRem.replace(/(.*)rem/g, `${size}rem`)
+          : '0',
+      )
+      .join(' ');
+};
+
+/**
+ * @function
+ * @name color
+ * @description Make a color, or a shade of color
+ * @param name
+ * @param shade
+ * @returns {function(*): string}
+ */
+export const color = (name, shade = false) => props =>
+  shade ? `${props.theme.colors[name][shade]}` : `${props.theme.colors[name]}`;
+
+/**
+ * @function
+ * @name viewport
+ * @description returns the viewport width based on pixel
+ * @param size
+ * @param threshold
+ * @returns {function(*): string}
+ */
+export const viewport = (size, threshold = 0) => props =>
+  `${props.theme.viewports[size] - threshold}px`;

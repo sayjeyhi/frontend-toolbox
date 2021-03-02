@@ -1,0 +1,52 @@
+---
+name: useDebounce
+route: /hooks/useDebounce
+menu: 5.Hooks
+---
+
+# useDebounce
+> 🔂 change rapidly, run code once
+
+[![version](https://img.shields.io/npm/v/@snappmarket/hooks.svg?style=flat-square)](https://www.npmjs.com/package/@snappmarket/hooks)
+[![downloads](https://img.shields.io/npm/dm/@snappmarket/hooks.svg?style=flat-square)](http://www.npmtrends.com/@snappmarket/hooks)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![MIT License](https://img.shields.io/npm/l/@snappmarket/hooks.svg?style=flat-square)](https://github.com/snappmarket/frontend-toolbox/blob/develop/packages/ui/index.mdx)
+
+## get started
+Easily install `@snappmarket/hooks` first, then use any hook you want in your components with fully
+tree-shakable code.
+
+```bash
+yarn add @snappmarket/hooks
+```
+
+## usage
+```javascript
+import { useDebounce } from '@snappmarket/hooks';
+
+const SampleComponent = props => {
+  const [value, setValue] = useState('');
+  const [debouncedValue] = useDebounce(value, 200);
+
+  /**
+   * Call api based on debounced value
+   */
+  useEffect(() => {
+    // do something with debounce
+  }, [debouncedValue]);
+};
+```
+
+<!-- doc -->
+<a name="useDebounce"></a>
+
+## useDebounce
+A hook that debounce setting a value
+
+**Kind**: global function
+
+| Param |
+| --- |
+| value |
+| delay |
+

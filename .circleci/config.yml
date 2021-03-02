@@ -17,7 +17,7 @@ aliases:
   - &run_yarn
     run:
       name: Link and Install Packages
-      command: yarn link && yarn --frozen-lockfile
+      command: yarn link && yarn
 
 jobs:
   main:
@@ -58,17 +58,12 @@ jobs:
       # test and coverage
       - run:
           command: yarn test --verbose=true --maxWorkers=2
-      - run:
-          command: yarn test --maxWorkers=2 --collectCoverage=true
 
       # prettier and linter
       - run:
           command: yarn prettify
       - run:
           command: yarn lint:eslint:fix
-
-      - store_artifacts:
-          path: .jest-coverage/coverage-final.json
 
 
   deploy:
@@ -78,21 +73,15 @@ jobs:
     steps:
       - checkout
 
+      - run:
+          name: Nodejs Version
+          command: node --version
+      - *restore_yarn_cache
+      - *run_yarn
+
       # build packages
       - run:
           command: yarn build
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/node_modules
-            - project/packages/helpers/dist
-            - project/packages/helpers/node_modules
-            - project/packages/hooks/dist
-            - project/packages/hooks/node_modules
-            - project/packages/icons/dist
-            - project/packages/icons/node_modules
-            - project/packages/ui/dist
-            - project/packages/ui/node_modules
 
       # deploy to heroku
       - run:

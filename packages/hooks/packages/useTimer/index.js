@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 
 /**
- * Will count till time or increase time
+ * @function
+ * @name useTimer
+ * @description A hook that count till time or increase time
  * @param config
  * @returns {{start: *, reset: *, time: *, pause: *}}
  */
-export default (config) => {
+export default function useTimer(config) {
   const initialConfig = {
     endTime: null,
     initialTime: 0,
@@ -14,9 +16,7 @@ export default (config) => {
     timerType: 'INCREMENTAL',
   };
 
-  const {
-    endTime, initialTime, interval, step, timerType,
-  } = {
+  const { endTime, initialTime, interval, step, timerType } = {
     ...initialConfig,
     ...config,
   };
@@ -43,14 +43,17 @@ export default (config) => {
   };
   const createInterval = () => {
     intervalRef.current = setInterval(() => {
-      setTime((previousTime) => timerType === 'INCREMENTAL' ? previousTime + step : previousTime - step);
+      setTime(previousTime =>
+        timerType === 'INCREMENTAL' ? previousTime + step : previousTime - step,
+      );
     }, interval);
   };
   const createTimeout = () => {
     if (endTime === null) {
       return;
     }
-    const delay = Math.abs(endTime - (pausedTimeRef.current || initialTime)) * interval;
+    const delay =
+      Math.abs(endTime - (pausedTimeRef.current || initialTime)) * interval;
     timeoutRef.current = setTimeout(() => {
       cancelInterval();
       setShouldResetTime(true);
@@ -94,6 +97,9 @@ export default (config) => {
   }, []);
 
   return {
-    pause, reset, start, time,
+    pause,
+    reset,
+    start,
+    time,
   };
 };

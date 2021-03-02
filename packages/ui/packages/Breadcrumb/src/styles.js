@@ -1,30 +1,33 @@
 // eslint-disable-next-line import/no-named-default
 import { default as Styled } from 'styled-components';
-const StyledBreadcrumbWrapper = Styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    align-items: center;
-    background-color:  ${(props) => props.theme.colors.white};s
-    border-radius: calc(${(props) => props.theme.defaultRem} * 0.2);
-    font-size: calc(${(props) => props.theme.defaultRem} * 1.5);
-`;
-const StyledBreadcrumbItem = Styled.div`
-    padding: calc(${(props) => props.theme.defaultRem});
-    a {
-        text-decoration: none;
-        font-size: calc(${(props) => props.theme.defaultRem} * 1.2);
-    }
-`;
-const StyledBreadcrumbItemSeparator = Styled.div``;
-const StyledBreadcrumbItemWrapper = Styled.div`
-    display: flex;
-    align-items: center;
+import { rem, color } from '@snappmarket/helpers'
+
+export const StyledBreadcrumbWrapper = Styled.nav`
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  background-color:  ${color('white')};
+  border-radius: ${rem(0.2)};
+  font-size:${rem(1.5)};
 `;
 
-export {
-  StyledBreadcrumbWrapper,
-  StyledBreadcrumbItem,
-  StyledBreadcrumbItemSeparator,
-  StyledBreadcrumbItemWrapper,
-};
+export const StyledBreadcrumbItem = Styled.div`
+  padding: ${rem(1)};
+  a {
+    text-decoration: none;
+    color: ${color('gray', 'normal')};
+    font-size: ${rem(1.2)};
+  }
+  h2 {
+    color: ${color('gray', 'normal')};
+    font-size: ${rem(1.2)};
+  }
+`;
+
+export const StyledBreadcrumbItemSeparator = Styled.div``;
+
+export const StyledBreadcrumbItemWrapper = Styled.div`
+  display: flex;
+  align-items: center;
+`;

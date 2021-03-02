@@ -5,10 +5,7 @@ import {
   addClassToElement,
 } from '../utils';
 
-import {
-  setPageNumberOnChild,
-  cloneNodeGenerator,
-} from './partial';
+import { setPageNumberOnChild, cloneNodeGenerator } from './partial';
 
 export default class SliderTrailer {
   constructor(params) {
@@ -27,13 +24,10 @@ export default class SliderTrailer {
 
   initialize() {
     const {
-      config: {
-        responsive,
-        slider,
-        rtl,
-      },
+      config: { responsive, slider, rtl, autoWidth, freeScroll },
       getInfinite,
       getSliderItems,
+      getSlidesLength,
       getSliderItemWidth,
       getPerSlide,
       getSlideSize,
@@ -44,6 +38,7 @@ export default class SliderTrailer {
 
     const infinite = getInfinite();
     const sliderItems = getSliderItems();
+    const slidesLength = getSlidesLength();
     const slideSize = getSlideSize();
     const sliderItemWidth = getSliderItemWidth();
     const perSlide = getPerSlide();
@@ -55,37 +50,43 @@ export default class SliderTrailer {
       sliderItems,
       slider,
       responsive,
+      autoWidth,
     });
 
     // init slider position
-    setIndex(setSliderItemsPosition({
-      indexItem: index,
-      sliderItemWidth,
-      sliderItems,
-      rtl,
-    }));
-
-    setPageNumberOnChild({ sliderItems, responsive });
-
-
-    // Clone group of slide from infinite carousel
-    if (infinite) {
-      const cloneNodeGeneratorParams = {
-        perSlide,
+    setIndex(
+      setSliderItemsPosition({
+        indexItem: index,
+        sliderItemWidth,
         sliderItems,
-        wrapper: slider,
-      };
-      cloneNodeGenerator(cloneNodeGeneratorParams);
-    }
+        rtl,
+      }),
+    );
 
-    setActiveclassToCurrent({
-      sliderItems,
-      perSlide,
-      slideSize,
-      sliderMainWidth,
-      index: getIndex(),
-      infinite,
-    });
+
+    if (!autoWidth) {
+      setPageNumberOnChild({ sliderItems, responsive });
+      // Clone group of slide from infinite carousel
+      if (infinite) {
+        const cloneNodeGeneratorParams = {
+          perSlide,
+          sliderItems,
+          wrapper: slider,
+        };
+        cloneNodeGenerator(cloneNodeGeneratorParams);
+      }
+      setActiveclassToCurrent({
+        sliderItems,
+        perSlide,
+        slideSize,
+        sliderMainWidth,
+        index: getIndex(),
+        infinite,
+        slidesLength,
+        autoWidth,
+        freeScroll,
+      });
+    }
 
     // add loaded class to main slide after init
     const classItemParams = {

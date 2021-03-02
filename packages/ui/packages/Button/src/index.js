@@ -11,7 +11,7 @@ import {
 } from './styles';
 
 /* eslint-disable no-nested-ternary */
-const Button = (props) => {
+const Button = props => {
   const {
     modifier,
     size,
@@ -22,6 +22,7 @@ const Button = (props) => {
     label,
     fullWidth,
     loading,
+    role,
     ...rest
   } = props;
 
@@ -57,7 +58,7 @@ const Button = (props) => {
     direction,
     fontSize: boxSizing[size].fontSize,
     height: boxSizing[size].height,
-    minWidth: title ? boxSizing[size].minWidth : boxSizing[size].minWidth,
+    minWidth: title ? boxSizing[size].minWidth : boxSizing[size].height,
     ...rest,
   };
 
@@ -83,17 +84,27 @@ const Button = (props) => {
   );
   const buttons = {
     primary: (
-      <StyledPrimaryButton data-testid="button" fullWidth={fullWidth} {...options}>
+      <StyledPrimaryButton
+        data-testid="button"
+        fullWidth={fullWidth}
+        role={role}
+        {...options}
+      >
         {content}
       </StyledPrimaryButton>
     ),
     outline: (
-      <StyledOutlineButton data-testid="button" fullWidth={fullWidth} {...options}>
+      <StyledOutlineButton
+        data-testid="button"
+        fullWidth={fullWidth}
+        role={role}
+        {...options}
+      >
         {content}
       </StyledOutlineButton>
     ),
     link: (
-      <StyledLinkButton data-testid="button" fullWidth={fullWidth} {...options}>
+      <StyledLinkButton data-testid="button" fullWidth={fullWidth} role={role} {...options}>
         {content}
       </StyledLinkButton>
     ),
@@ -114,6 +125,7 @@ Button.propTypes = {
     PropTypes.node,
   ]),
   fullWidth: PropTypes.bool,
+  role: PropTypes.string,
   loading: PropTypes.bool,
   label: PropTypes.string,
   className: PropTypes.string,
@@ -131,5 +143,6 @@ Button.defaultProps = {
   className: '',
   loading: false,
   direction: 'right',
+  role:'button',
 };
 export default Button;

@@ -1,0 +1,49 @@
+---
+name: useDidUpdateEffect
+route: /hooks/useDidUpdateEffect
+menu: 5.Hooks
+---
+
+# useDidUpdateEffect
+> 🧵 do not worry about render phase effect calls
+
+[![version](https://img.shields.io/npm/v/@snappmarket/hooks.svg?style=flat-square)](https://www.npmjs.com/package/@snappmarket/hooks)
+[![downloads](https://img.shields.io/npm/dm/@snappmarket/hooks.svg?style=flat-square)](http://www.npmtrends.com/@snappmarket/hooks)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![MIT License](https://img.shields.io/npm/l/@snappmarket/hooks.svg?style=flat-square)](https://github.com/snappmarket/frontend-toolbox/blob/develop/packages/ui/index.mdx)
+
+## get started
+Easily install `@snappmarket/hooks` first, then use any hook you want in your components with fully
+tree-shakable code.
+
+```bash
+yarn add @snappmarket/hooks
+```
+
+## usage
+```javascript
+import { useDidUpdateEffect } from '@snappmarket/hooks';
+
+const SampleComponent = props => {
+  /**
+   * Do not run on render
+   */
+  useDidUpdateEffect(() => {
+    // I will run only when my dependencies update
+  }, [deps]);
+};
+```
+
+<!-- doc -->
+<a name="useDidUpdateEffect"></a>
+
+## useDidUpdateEffect
+A hook that calls function on component update or inputs change phase
+
+**Kind**: global function
+
+| Param |
+| --- |
+| fn |
+| inputs |
+

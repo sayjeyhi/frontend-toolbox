@@ -11,49 +11,47 @@ import {
   prevNone,
   nextBlock,
   nextNone,
+  addClassToElement,
+  removeClassFromElement,
+  calcAutoWidthAllSliderItems,
 } from '../utils';
 
-export const directionClientX = (params) => {
-  const { rtl, e, sliderMainWidth } = params;
-  if (rtl) return sliderMainWidth - e.clientX;
-  return e.clientX;
-};
-
-export const directionTouchClientX = (params) => {
+export const directionTouchClientX = params => {
   const { rtl, e, sliderMainWidth } = params;
   if (rtl) return sliderMainWidth - e.touches[0].clientX;
   return e.touches[0].clientX;
 };
 
-export const caroueslTouchStart = (params) => directionTouchClientX(params);
+export const caroueslTouchStart = params => directionTouchClientX(params);
+export const dragActionTouchmovePosX2 = params => {
+  const { e, posX1, rtl, sliderMainWidth } = params;
+  return posX1 - directionTouchClientX({ rtl, e, sliderMainWidth });
+};
 
-export const caroueslDragAction = (params) => {
-  const {
-    e, dragEndCall, dragActionCall, sliderMainWidth, rtl,
-  } = params;
+export const dragActionTouchmovePosX1 = params => directionTouchClientX(params);
+
+export const directionClientX = params => {
+  const { rtl, e, sliderMainWidth } = params;
+  if (rtl) return sliderMainWidth - e.clientX;
+  return e.clientX;
+};
+
+export const caroueslDragStart = params => {
+  const { e, dragEndCall, dragActionCall, sliderMainWidth, rtl } = params;
   document.onmouseup = dragEndCall;
   document.onmousemove = dragActionCall;
   return directionClientX({ rtl, e, sliderMainWidth });
 };
-export const dragActionTouchmovePosX2 = (params) => {
-  const {
-    e, posX1, rtl, sliderMainWidth,
-  } = params;
-  return posX1 - directionTouchClientX({ rtl, e, sliderMainWidth });
-};
 
-export const dragActionTouchmovePosX1 = (params) => directionTouchClientX(params);
-
-export const dragActionMousemove = (params) => {
-  const {
-    posX1, e, rtl, sliderMainWidth,
-  } = params;
+export const dragActionMousemove = params => {
+  const { posX1, e, rtl, sliderMainWidth } = params;
   return posX1 - directionClientX({ rtl, e, sliderMainWidth });
 };
-export const dragActionMousemovePosX1 = ({ rtl, e, sliderMainWidth }) => directionClientX({ rtl, e, sliderMainWidth });
+export const dragActionMousemovePosX1 = ({ rtl, e, sliderMainWidth }) =>
+  directionClientX({ rtl, e, sliderMainWidth });
 
 // eslint-disable-next-line consistent-return
-export const dragActionCalcPosition = (params) => {
+export const dragActionCalcPosition = params => {
   const {
     sliderItems,
     posX2,
@@ -65,6 +63,7 @@ export const dragActionCalcPosition = (params) => {
     sliderMainWidth,
     infinite,
     threshold,
+    autoWidth,
   } = params;
 
   const posX2New = () => {
@@ -79,7 +78,7 @@ export const dragActionCalcPosition = (params) => {
     if (rtl) return sliderItemWidth;
     return -sliderItemWidth;
   };
-  const calcFinalItemPositionNew = directionSetter({
+  const finalItemPosition = directionSetter({
     rtl,
     input: calcFinalItemPosition({
       slideSize,
@@ -87,6 +86,8 @@ export const dragActionCalcPosition = (params) => {
       sliderMainWidth,
       perSlide,
       infinite,
+      autoWidth,
+      sliderItems,
     }),
   });
 
@@ -97,9 +98,13 @@ export const dragActionCalcPosition = (params) => {
 
   if (!infinite && !rtl) {
     // stop drag when firstItem go to lastItem on drag
-    const firstTolastDrag = getTranslate3d(sliderItems) - posX2New() > (sliderItemWidthNew() * perSlide) + thresholdNew();
+    const firstTolastDrag =
+      getTranslate3d(sliderItems) - posX2New() >
+      sliderItemWidthNew() * perSlide + thresholdNew();
     // stop drag when lastItem go to fistItem on drag
-    const lastToFirstDrag = getTranslate3d(sliderItems) - posX2New() <= calcFinalItemPositionNew - thresholdNew();
+    const lastToFirstDrag =
+      getTranslate3d(sliderItems) - posX2New() <=
+      finalItemPosition - thresholdNew();
     if (firstTolastDrag || lastToFirstDrag) {
       return false;
     }
@@ -109,7 +114,9 @@ export const dragActionCalcPosition = (params) => {
     // stop drag when firstItem go to lastItem on drag
     const firstTolastDrag = getTranslate3d(sliderItems) - posX2New() > 0;
     // stop drag when lastItem go to fistItem on drag
-    const lastToFirstDrag = getTranslate3d(sliderItems) - posX2New() + 5 < sliderItemWidthNew() * (slidesLength + perSlide + 1);
+    const lastToFirstDrag =
+      getTranslate3d(sliderItems) - posX2New() + 5 <
+      sliderItemWidthNew() * (slidesLength + perSlide + 1);
 
     if (firstTolastDrag || lastToFirstDrag) {
       return false;
@@ -118,9 +125,13 @@ export const dragActionCalcPosition = (params) => {
 
   if (!infinite && rtl) {
     // stop drag when firstItem go to lastItem on drag
-    const firstTolastDrag = getTranslate3d(sliderItems) - posX2New() < (sliderItemWidthNew() * perSlide) + thresholdNew();
+    const firstTolastDrag =
+      getTranslate3d(sliderItems) - posX2New() <
+      sliderItemWidthNew() * perSlide + thresholdNew();
     // stop drag when lastItem go to fistItem on drag
-    const lastToFirstDrag = getTranslate3d(sliderItems) - posX2New() >= calcFinalItemPositionNew - thresholdNew();
+    const lastToFirstDrag =
+      getTranslate3d(sliderItems) - posX2New() >=
+      finalItemPosition - thresholdNew();
 
     if (firstTolastDrag || lastToFirstDrag) {
       return false;
@@ -130,7 +141,9 @@ export const dragActionCalcPosition = (params) => {
     // stop drag when firstItem go to lastItem on drag
     const firstTolastDrag = getTranslate3d(sliderItems) - posX2New() < 0;
     // stop drag when lastItem go to fistItem on drag
-    const lastToFirstDrag = getTranslate3d(sliderItems) - posX2New() - 5 > sliderItemWidthNew() * (slidesLength + perSlide + 1);
+    const lastToFirstDrag =
+      getTranslate3d(sliderItems) - posX2New() - 5 >
+      sliderItemWidthNew() * (slidesLength + perSlide + 1);
     if (firstTolastDrag || lastToFirstDrag) {
       return false;
     }
@@ -140,13 +153,12 @@ export const dragActionCalcPosition = (params) => {
   sliderItems.style.transform = setTranslate3d(result());
 };
 
-
 export const mouseEventNull = () => {
   document.onmouseup = null;
   document.onmousemove = null;
 };
 
-export const dragStart = (params) => {
+export const dragStart = params => {
   let { e } = params;
   const {
     sliderItems,
@@ -159,16 +171,18 @@ export const dragStart = (params) => {
   } = params;
 
   e = e || window.event;
-  e.preventDefault();
   const posInitial = getTranslate3d(sliderItems);
   if (e.type === 'touchstart') {
     setPosInitial(posInitial);
-    setPosX1(caroueslTouchStart({
-      e,
-      rtl,
-      sliderMainWidth,
-    }));
+    setPosX1(
+      caroueslTouchStart({
+        e,
+        rtl,
+        sliderMainWidth,
+      }),
+    );
   } else {
+    e.preventDefault();
     const dragActionParams = {
       e,
       rtl,
@@ -177,12 +191,12 @@ export const dragStart = (params) => {
       sliderMainWidth,
     };
     setPosInitial(posInitial);
-    setPosX1(caroueslDragAction(dragActionParams));
+    setPosX1(caroueslDragStart(dragActionParams));
   }
 };
 
 // eslint-disable-next-line consistent-return
-export const dragAction = (params) => {
+export const dragAction = params => {
   let { e } = params;
   const {
     getPosX1,
@@ -199,6 +213,7 @@ export const dragAction = (params) => {
     infinite,
     getSlideSize,
     getSliderMainWidth,
+    autoWidth,
   } = params;
   const sliderMainWidth = getSliderMainWidth();
   e = e || window.event;
@@ -210,6 +225,22 @@ export const dragAction = (params) => {
     return false;
   }
 
+  if (autoWidth) {
+    if (calcAutoWidthAllSliderItems(getSliderItems()) <= sliderMainWidth) {
+      return false;
+    }
+  }
+
+  const startAvoidClicks = Posx => {
+    if (Math.abs(Posx) > 2) {
+      addClassToElement({
+        item: getSliderItems(),
+        className: 'avoid-clicks',
+      });
+    }
+    return Posx;
+  };
+
   if (e.type === 'touchmove') {
     const dragActionTouchmovePosX2Params = {
       posX1: getPosX1(),
@@ -217,6 +248,7 @@ export const dragAction = (params) => {
     };
     setPosX2(dragActionTouchmovePosX2(dragActionTouchmovePosX2Params));
     setPosX1(dragActionTouchmovePosX1(clientXParams));
+    startAvoidClicks(dragActionTouchmovePosX2(dragActionTouchmovePosX2Params));
   } else {
     const dragActionMousemoveParams = {
       posX1: getPosX1(),
@@ -224,6 +256,7 @@ export const dragAction = (params) => {
     };
     setPosX2(dragActionMousemove(dragActionMousemoveParams));
     setPosX1(dragActionMousemovePosX1(clientXParams));
+    startAvoidClicks(dragActionMousemove(dragActionMousemoveParams));
   }
 
   const dragActionCalcPositionParams = {
@@ -240,12 +273,13 @@ export const dragAction = (params) => {
     infinite,
     threshold,
     rtl,
+    autoWidth,
   };
   dragActionCalcPosition(dragActionCalcPositionParams);
 };
 
 // eslint-disable-next-line consistent-return
-export const dragEnd = (params) => {
+export const dragEnd = params => {
   const {
     sliderItems,
     threshold,
@@ -254,6 +288,7 @@ export const dragEnd = (params) => {
     infinite,
     slideSize,
     sliderMainWidth,
+    sliderItemWidth,
     setIndex,
     transitionendWatcherCall,
     slider,
@@ -261,7 +296,16 @@ export const dragEnd = (params) => {
     getPosFinal,
     nav,
     rtl,
+    autoWidth,
+    freeScroll,
+    index,
+    startTrans,
   } = params;
+
+  removeClassFromElement({
+    item: sliderItems,
+    className: 'avoid-clicks',
+  });
 
   const perSlide = truncResponsiveItemCount(responsive);
 
@@ -271,13 +315,18 @@ export const dragEnd = (params) => {
     return false;
   }
 
+  if (autoWidth) {
+    if (calcAutoWidthAllSliderItems(sliderItems) <= sliderMainWidth) {
+      return false;
+    }
+  }
 
   const thresholdNew = () => {
     if (rtl) return -threshold;
     return threshold;
   };
 
-  const calcFinalItemPositionNew = directionSetter({
+  const finalItemPosition = directionSetter({
     rtl,
     input: calcFinalItemPosition({
       slideSize,
@@ -285,6 +334,8 @@ export const dragEnd = (params) => {
       sliderMainWidth,
       perSlide,
       infinite,
+      autoWidth,
+      sliderItems,
     }),
   });
   setPosFinal(getTranslate3d(sliderItems));
@@ -295,14 +346,24 @@ export const dragEnd = (params) => {
     perSlide,
     slideSize,
     sliderMainWidth,
+    slidesLength,
+    freeScroll,
+    autoWidth,
+    index,
+    responsiveItemCount: responsiveItemCount(responsive),
   });
+
+  const currentPosition = getTranslate3d(sliderItems);
+
   setIndex(calcIndex);
 
-
-  if ((!infinite && calcIndex > slidesLength && calcIndex < slidesLength + perSlide)
-    || (infinite && calcIndex + perSlide === perSlide)
+  if (
+    (!infinite &&
+      calcIndex > slidesLength &&
+      calcIndex < slidesLength + perSlide) ||
+    (infinite && calcIndex + perSlide === perSlide)
   ) {
-    sliderItems.style.transform = setTranslate3d(calcFinalItemPositionNew);
+    sliderItems.style.transform = setTranslate3d(finalItemPosition);
   }
 
   if (!infinite && nav) {
@@ -317,10 +378,10 @@ export const dragEnd = (params) => {
   }
 
   if (
-    (!infinite
-    && (getTranslate3d(sliderItems) <= thresholdNew()
-    && getTranslate3d(sliderItems) >= 0))
-    || (rtl && getTranslate3d(sliderItems) <= 0)
+    (!infinite &&
+      getTranslate3d(sliderItems) <= thresholdNew() &&
+      getTranslate3d(sliderItems) >= 0) ||
+    (rtl && getTranslate3d(sliderItems) <= 0)
   ) {
     sliderItems.style.transform = setTranslate3d(0);
     if (nav) {
@@ -329,20 +390,45 @@ export const dragEnd = (params) => {
     }
   }
 
-  if (!infinite && !rtl && getTranslate3d(sliderItems) <= calcFinalItemPositionNew) {
-    sliderItems.style.transform = setTranslate3d(calcFinalItemPositionNew);
+  if (!infinite && !rtl && getTranslate3d(sliderItems) <= finalItemPosition) {
+    sliderItems.style.transform = setTranslate3d(finalItemPosition);
     if (nav) {
       nextNone(slider);
       prevBlock(slider);
     }
   }
 
-  if (!infinite && rtl && getTranslate3d(sliderItems) >= calcFinalItemPositionNew) {
-    sliderItems.style.transform = setTranslate3d(calcFinalItemPositionNew);
+  if (!infinite && rtl && getTranslate3d(sliderItems) >= finalItemPosition) {
+    sliderItems.style.transform = setTranslate3d(finalItemPosition);
     if (nav) {
       nextNone(slider);
       prevBlock(slider);
     }
+  }
+
+  if (
+    !infinite &&
+    Math.abs(currentPosition) < Math.abs(finalItemPosition) &&
+    currentPosition > 0 &&
+    startTrans !== currentPosition &&
+    !freeScroll &&
+    !autoWidth
+  ) {
+    addClassToElement({
+      item: sliderItems,
+      className: 'soft-transition',
+    });
+    const result = directionSetter({
+      rtl,
+      input: -sliderItemWidth * calcIndex,
+    });
+    sliderItems.style.transform = setTranslate3d(result);
+    setTimeout(() => {
+      removeClassFromElement({
+        item: sliderItems,
+        className: 'soft-transition',
+      });
+    }, 300);
   }
 
   mouseEventNull();

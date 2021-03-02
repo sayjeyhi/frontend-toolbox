@@ -1,0 +1,47 @@
+---
+name: useTimer
+route: /hooks/useTimer
+menu: 5.Hooks
+---
+
+# useTimer
+> ⏱ handle timing with ease
+
+[![version](https://img.shields.io/npm/v/@snappmarket/hooks.svg?style=flat-square)](https://www.npmjs.com/package/@snappmarket/hooks)
+[![downloads](https://img.shields.io/npm/dm/@snappmarket/hooks.svg?style=flat-square)](http://www.npmtrends.com/@snappmarket/hooks)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![MIT License](https://img.shields.io/npm/l/@snappmarket/hooks.svg?style=flat-square)](https://github.com/snappmarket/frontend-toolbox/blob/develop/packages/ui/index.mdx)
+
+## get started
+Easily install `@snappmarket/hooks` first, then use any hook you want in your components with fully
+tree-shakable code.
+
+```bash
+yarn add @snappmarket/hooks
+```
+
+## usage
+```javascript
+import { useTimer } from '@snappmarket/hooks';
+
+const SampleComponent = props => {
+  const { time, start: startTimer, reset: resetTimer } = useTimer({
+    endTime: 0,
+    initialTime: 100,
+    timerType: 'DECREMENTAL',
+  });
+};
+```
+
+<!-- doc -->
+<a name="useTimer"></a>
+
+## useTimer
+A hook that count till time or increase time
+
+**Kind**: global function
+
+| Param |
+| --- |
+| config |
+

@@ -1,0 +1,116 @@
+---
+name: NumberHelpers
+route: /helpers/NumberHelpers
+menu: 6.Helpers
+---
+
+
+# Number helpers
+> ✴ Methods that helps us to control numbers
+
+[![version](https://img.shields.io/npm/v/@snappmarket/helpers.svg?style=flat-square)](https://www.npmjs.com/package/@snappmarket/helpers)
+[![downloads](https://img.shields.io/npm/dm/@snappmarket/helpers.svg?style=flat-square)](https://www.npmtrends.com/@snappmarket/helpers)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![MIT License](https://img.shields.io/npm/l/@snappmarket/helpers.svg?style=flat-square)](https://github.com/snappmarket/frontend-toolbox/blob/develop/packages/ui/index.mdx)
+
+## get started
+
+Easily install `@snappmarket/helpers` first, then use any helper you want in your components with fully
+tree-shakable code.
+
+```bash
+npm i @snappmarket/helpers
+```
+
+## usage
+```javascript
+import { METHOD_NAME } from '@snappmarket/helpers';
+```
+
+<!-- doc -->
+## Functions
+
+<dl>
+<dt><a href="#persianNumber">persianNumber(string)</a> ⇒ string</dt>
+<dd><p>converts the english number to persian number</p>
+</dd>
+<dt><a href="#englishNumber">englishNumber(string)</a> ⇒ string</dt>
+<dd><p>converts both arabic-extended and arabic-indic numbers to english</p>
+</dd>
+<dt><a href="#generateKey">generateKey()</a> ⇒ string</dt>
+<dd><p>returns a key which is combination of a random number and timestamp</p>
+</dd>
+<dt><a href="#cellphoneValidate">cellphoneValidate()</a> ⇒ string</dt>
+<dd><p>returns a regular expression for validating cellphone number with format of cellphone numbers of Iran</p>
+</dd>
+<dt><a href="#currencyPrice">currencyPrice(amount)</a> ⇒ string</dt>
+<dd><p>turns number into currency formatted number in persian</p>
+</dd>
+<dt><a href="#zeroPadding">zeroPadding(number, padding)</a> ⇒ string</dt>
+<dd><p>adds starting zeros to numbers</p>
+</dd>
+</dl>
+
+<a name="persianNumber"></a>
+
+## persianNumber
+converts the english number to persian number
+
+**Kind**: global function
+
+| Param | Type | Description |
+| --- | --- | --- |
+| string | string | the string that contains the number  you want to convert to persian |
+
+<a name="englishNumber"></a>
+
+## englishNumber
+converts both arabic-extended and arabic-indic numbers to english
+
+**Kind**: global function
+
+| Param | Type | Description |
+| --- | --- | --- |
+| string | string | the string that contains the number  you want to convert to english |
+
+<a name="generateKey"></a>
+
+## generateKey
+returns a key which is combination of a random number and timestamp
+
+**Kind**: global function
+<a name="cellphoneValidate"></a>
+
+## cellphoneValidate
+returns a regular expression for validating cellphone number with format of cellphone numbers of Iran
+
+**Kind**: global function
+<a name="currencyPrice"></a>
+
+## currencyPrice
+turns number into currency formatted number in persian
+
+**Kind**: global function
+<a name="decimalsPriceLimiter"></a>
+
+## decimalsPriceLimiter
+Convert a number into a string, rounding the number to keep only limit (default is 2) decimals
+
+**Kind**: global function
+
+| Param | Type | Description |
+| --- | --- | --- |
+| amount | number | the english number you want to convert to currency formatted number in persian |
+
+<a name="zeroPadding"></a>
+
+## zeroPadding
+adds starting zeros to numbers
+
+**Kind**: global function
+
+| Param | Type | Description |
+| --- | --- | --- |
+| number | number | number you want to add zero to its start |
+| padding | number | count of zeros you want to add for a number to fix its length |
+

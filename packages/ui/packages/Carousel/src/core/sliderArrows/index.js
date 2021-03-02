@@ -7,10 +7,7 @@ import {
   removeClassFromElement,
 } from '../utils';
 
-import {
-  shiftSlideIsDir,
-  shiftSlideNonDir,
-} from './partial';
+import { shiftSlideIsDir, shiftSlideNonDir } from './partial';
 export default class SliderArrows {
   constructor(params) {
     const { core } = params;
@@ -28,9 +25,7 @@ export default class SliderArrows {
 
   initialize() {
     const {
-      config: {
-        slider,
-      },
+      config: { slider },
       getSliderItems,
       setAllowShift,
     } = this.core;
@@ -56,13 +51,9 @@ export default class SliderArrows {
     setAllowShift(true);
   }
 
-
   shiftSlide(dir, action) {
     const {
-      config: {
-        responsive,
-        rtl,
-      },
+      config: { responsive, rtl, autoWidth },
       getInfinite,
       getSliderItems,
       setPosInitial,
@@ -93,6 +84,7 @@ export default class SliderArrows {
         dir,
         infinite: getInfinite(),
         rtl,
+        autoWidth,
       };
       if (dir === 1) {
         setIndex(shiftSlideIsDir(shiftSlideParams));

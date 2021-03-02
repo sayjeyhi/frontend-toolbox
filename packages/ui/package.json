@@ -1,7 +1,7 @@
 {
   "name": "@snappmarket/ui",
   "private": false,
-  "version": "0.2.1-beta.cswtgmi",
+  "version": "0.5.6",
   "author": "Jafar Rezaei (SayJeyHi) <jafar.rezaei.ard@gmail.com>",
   "main": "./dist/index.js",
   "module": "./dist/esm/index.js",
@@ -16,20 +16,22 @@
     "build:umd": "cross-env BABEL_ENV=production-umd rollup -c",
     "build:copy-files": "node ../../scripts/copy-file/packages-copy.js",
     "prebuild": "rimraf ./dist",
-    "release": "node ../../scripts/release/release-parents.js",
+    "change-version": "node ../../scripts/release/change-version.js",
+    "publish-npm": "node ../../scripts/release/publish-npm.js",
     "start": "rollup -c -w"
   },
   "dependencies": {
-    "@snappmarket/helpers": "^0.2.1-alpha.4",
-    "@snappmarket/hooks": "^0.2.1-alpha.3",
-    "@snappmarket/icons": "^0.2.1-alpha.2",
-    "polished": "^3.4.2",
+    "polished": "^3.6.6",
     "react-hgs-input-range": "^1.3.1",
-    "react-image": "^2.2.2",
+    "react-image": "^4.0.0",
     "react-router-dom": "^5.1.2",
-    "react-slick": "^0.25.2"
+    "use-resize-observer": "^6.1.0"
   },
   "peerDependencies": {
+    "@iconbox/snappmarket": "^1.0.3",
+    "@snappmarket/config": "^0.2.10",
+    "@snappmarket/helpers": "^0.2.10",
+    "@snappmarket/hooks": "^0.2.10",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "styled-components": "^4.2.0"

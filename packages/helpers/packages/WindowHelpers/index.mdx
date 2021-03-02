@@ -1,0 +1,104 @@
+---
+name: WindowHelpers
+route: /helpers/WindowHelpers
+menu: 6.Helpers
+---
+
+
+# Window helpers
+> ✴ Methods that helps us to manage window related stuffs
+
+[![version](https://img.shields.io/npm/v/@snappmarket/helpers.svg?style=flat-square)](https://www.npmjs.com/package/@snappmarket/helpers)
+[![downloads](https://img.shields.io/npm/dm/@snappmarket/helpers.svg?style=flat-square)](https://www.npmtrends.com/@snappmarket/helpers)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![MIT License](https://img.shields.io/npm/l/@snappmarket/helpers.svg?style=flat-square)](https://github.com/snappmarket/frontend-toolbox/blob/develop/packages/ui/index.mdx)
+
+## get started
+
+Easily install `@snappmarket/helpers` first, then use any helper you want in your components with fully
+tree-shakable code.
+
+```bash
+yarn add @snappmarket/helpers
+```
+
+## usage
+```javascript
+import { METHOD_NAME } from '@snappmarket/helpers';
+```
+
+<!-- doc -->
+## Functions
+
+<dl>
+<dt><a href="#getPathName">getPathName(pathname)</a> ⇒ string</dt>
+<dd><p>gets last part of URL and adds _page suffix to it</p>
+</dd>
+<dt><a href="#getWindowSize">getWindowSize()</a> ⇒ Object</dt>
+<dd><p>gets dimension  of the window</p>
+</dd>
+<dt><a href="#getAbsoluteHeight">getAbsoluteHeight(el)</a> ⇒ number</dt>
+<dd><p>Get full height of element</p>
+</dd>
+<dt><a href="#isMobile">isMobile()</a> ⇒ boolean</dt>
+<dd><p>checks if the device of the user is a handheld device or not</p>
+</dd>
+<dt><a href="#scrollTop">scrollTop()</a> ⇒ function</dt>
+<dd><p>handle scroll to given position with smooth animation</p>
+</dd>
+<dt><a href="#detectBrowser">detectBrowser(browser)</a> ⇒ boolean</dt>
+<dd><p>check given browser is in userAgant or not</p>
+</dd>
+</dl>
+
+<a name="getPathName"></a>
+
+## getPathName
+gets last part of URL and adds _page suffix to it
+
+**Kind**: global function
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pathname | string | pathname of window |
+
+<a name="getWindowSize"></a>
+
+## getWindowSize
+gets dimension  of the window
+
+**Kind**: global function
+<a name="getAbsoluteHeight"></a>
+
+## getAbsoluteHeight
+Get full height of element
+
+**Kind**: global function
+
+| Param |
+| --- |
+| el |
+
+<a name="isMobile"></a>
+
+## isMobile
+checks if the device of the user is a handheld device or not
+
+**Kind**: global function
+<a name="scrollTop"></a>
+
+## scrollTop
+handle scroll to given position with smooth animation
+
+**Kind**: global function
+<a name="detectBrowser"></a>
+
+## detectBrowser
+check given browser is in userAgant or not
+
+**Kind**: global function
+
+| Param | Type | Description |
+| --- | --- | --- |
+| browser | string | get browser name |
+

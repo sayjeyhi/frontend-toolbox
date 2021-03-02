@@ -1,0 +1,70 @@
+---
+name: DebugHelpers
+route: /helpers/DebugHelpers
+menu: 6.Helpers
+---
+
+
+# Debugging helpers
+> ✴ Methods that helps us to debug easily
+
+[![version](https://img.shields.io/npm/v/@snappmarket/helpers.svg?style=flat-square)](https://www.npmjs.com/package/@snappmarket/helpers)
+[![downloads](https://img.shields.io/npm/dm/@snappmarket/helpers.svg?style=flat-square)](https://www.npmtrends.com/@snappmarket/helpers)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+[![MIT License](https://img.shields.io/npm/l/@snappmarket/helpers.svg?style=flat-square)](https://github.com/snappmarket/frontend-toolbox/blob/develop/packages/ui/index.mdx)
+
+## get started
+
+Easily install `@snappmarket/helpers` first, then use any helper you want in your components with fully
+tree-shakable code.
+
+```bash
+npm i @snappmarket/helpers
+```
+
+## usage
+```javascript
+import { METHOD_NAME } from '@snappmarket/helpers';
+```
+
+<!-- doc -->
+## Classes
+
+<dl>
+<dt><a href="#ApiError">ApiError</a></dt>
+<dd></dd>
+</dl>
+
+## Functions
+
+<dl>
+<dt><a href="#delog">delog(body)</a></dt>
+<dd><p>logs body of request on the console</p>
+</dd>
+</dl>
+
+<a name="ApiError"></a>
+
+## ApiError
+**Kind**: global class
+<a name="new_ApiError_new"></a>
+
+### new ApiError
+Custom error handler to api requests
+
+
+| Param |
+| --- |
+| args |
+
+<a name="delog"></a>
+
+## delog
+logs body of request on the console
+
+**Kind**: global function
+
+| Param | Type | Description |
+| --- | --- | --- |
+| body | string | body of the message you want to log on console |
+

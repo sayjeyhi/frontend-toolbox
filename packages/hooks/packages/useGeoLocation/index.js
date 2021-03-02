@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 
 /**
- * Get access to geo location based on timeout
+ * @function
+ * @name useGeoLocation
+ * @description A hook that get access to geo location based on timeout
  * @note : if timeout error it will send TIMEOUT as error
  * @param timeout number
  * @param options object for getCurrentPosition options
  * @returns {[*, *]}
  */
-const useGeoLocation = (timeout, options) => {
+export default function useGeoLocation(timeout, options) {
   let timeoutHandler;
   let canceled = false;
 
@@ -26,7 +28,7 @@ const useGeoLocation = (timeout, options) => {
      * Success getting geolocation
      * @param pos
      */
-    const successGetLocation = (pos) => {
+    const successGetLocation = pos => {
       if (!canceled) {
         setPosition(pos);
       }
@@ -37,7 +39,7 @@ const useGeoLocation = (timeout, options) => {
      * Failure getting geolocation
      * @param err
      */
-    const failGetLocation = (err) => {
+    const failGetLocation = err => {
       if (!canceled) {
         setError(err);
       }
@@ -64,5 +66,3 @@ const useGeoLocation = (timeout, options) => {
 
   return [position, error];
 };
-
-export default useGeoLocation;
